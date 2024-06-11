@@ -1,10 +1,10 @@
 package Console;
 
 import DB.DBWorker;
+import Logic.Marking;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Scanner;
 
 public class DBConsole {
@@ -18,20 +18,20 @@ public class DBConsole {
     }
     public void loop(){
         System.out.println("\n\nChoose action:\n" +
-                "1 - add record\n" +
-                "2 - get record\n" +
-                "3 - show all records\n" +
+                "1 - add marking\n" +
+                "2 - get marking\n" +
+                "3 - show all markings\n" +
                 "0 - exit program");
         Scanner in = new Scanner(System.in);
         switch (in.nextInt()){
             case 1:
-                add();
+                addMarking();
                 break;
             case 2:
-                get();
+                getMarking();
                 break;
             case 3:
-                showAll();
+                showAllMarkings();
                 break;
             case 0:
                 return;
@@ -42,7 +42,7 @@ public class DBConsole {
 
         loop();
     }
-    public void add(){
+    public void addMarking(){
         Scanner in = new Scanner(System.in);
 
         System.out.print("Resource: ");
@@ -51,29 +51,31 @@ public class DBConsole {
         System.out.print("Pass: ");
         String pass = in.nextLine();
 
-        if (db.addRecord(resource, pass)) {
+        Marking marking = new Marking(resource, pass);
+        if (db.addMarking(marking)) {
             System.out.println("Record successfully added");
         }
         else
             System.out.println("Record isn't added");
     }
-    public void get(){
+    public void getMarking(){
         Scanner in = new Scanner(System.in);
 
         System.out.print("Resource: ");
         String resource = in.nextLine();
 
-        ArrayList<String> passwords = db.getRecord(resource);
-        for (String pass : passwords){
-            System.out.println(pass);
+        ArrayList<Marking> passwordsMarkingList = db.getMarking(resource);
+        for (Marking marking : passwordsMarkingList){
+            System.out.println(marking.getPassword());
         }
     }
-    public void showAll(){
-        HashMap<String, String> password = db.showDataBase();
+    public void showAllMarkings(){
+        ArrayList<Marking> markings = db.getDataBase();
 
-        for (String resource : password.keySet()){
-            String message = resource + " | ";
-            message += password.get(resource);
+
+        for (Marking marking : markings){
+            String message = marking.getResource() + " | ";
+            message += marking.getPassword();
 
             System.out.println(message);
         }

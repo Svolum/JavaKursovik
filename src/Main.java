@@ -1,13 +1,12 @@
 import Console.DBConsole;
 import Console.PassConsole;
-import DB.DBWorker;
-
-import java.util.Scanner;
+import Viev.MyWindow;
 
 public class Main {
 
     public static void main(String[] args) {
-        //new PassConsole();
-        new DBConsole();
+        new PassConsole();
+        //new DBConsole();
+        //new MyWindow();
     }
 }

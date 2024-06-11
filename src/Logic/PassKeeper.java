@@ -1,33 +1,50 @@
 package Logic;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import DB.DBWorker;
+
+import java.util.*;
 
 public class PassKeeper {
-    private HashMap<String, String> passwords;
+    private ArrayList<Marking> markings;
+    private DBWorker db;
+    public ArrayList<Marking> getMarkings() {
+        return markings;
+    }
     public PassKeeper(){
-        passwords = new HashMap<>();
+        db = new DBWorker();
+
+        markings = db.getDataBase();
+    }
+    public  int getSize(){
+        return markings.size();
     }
     public boolean isEmpty(){
-        if (passwords.size() == 0)
-            return true;
-        return false;
+        return markings.isEmpty();
     }
-    public String get(String key){
-        return passwords.get(key);
+    // Get marking by RESOURCE
+    public ArrayList getMarking(String resource){
+        ArrayList<Marking> rezultList = new ArrayList<>();
+
+        for (Marking marking : markings){
+            if (marking.getResource().equals(resource)){
+                rezultList.add(marking);
+            }
+        }
+        return rezultList;
     }
-    public boolean add(String key, String value){
+    // Get marking by ID
+    public Marking getMarking(int id){
+        return markings.get(id);
+    }
+    public boolean addMarking(Marking marking){
         try {
-            passwords.put(key, value);
+            db.addMarking(marking);
+
+            markings.add(marking);
         }
         catch (Exception e) {
             return false;
         }
         return true;
-    }
-    public Set<String> getKeySet(){
-        return passwords.keySet();
     }
 }

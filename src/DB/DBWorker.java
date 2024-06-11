@@ -1,11 +1,9 @@
 package DB;
 
-import java.lang.reflect.InvocationTargetException;
+import Logic.Marking;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 
 public class DBWorker {
     private final String URL = "jdbc:sqlite:DB\\passwordsDB.db";
@@ -30,8 +28,8 @@ public class DBWorker {
             System.out.println("closeDB-не закрылось 0_0");
         }
     }
-    public HashMap showDataBase() {
-        HashMap<String, String> password = new HashMap<>();
+    public ArrayList getDataBase() {
+        ArrayList<Marking> markings = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
 
@@ -43,7 +41,8 @@ public class DBWorker {
 //                                    rs.getString(3);
 
 //                System.out.println(message);
-                password.put(rs.getString(2), rs.getString(3));
+                markings.add(new Marking(rs.getString(2), rs.getString(3)));
+                //password.put(rs.getString(2), rs.getString(3));
             }
             rs.close();
 
@@ -52,9 +51,9 @@ public class DBWorker {
             System.out.println("showDataBase- при попытке получить данные из бд");
             System.out.println(e);
         }
-        return password;
+        return markings;
     }
-    public boolean addRecord(String resource, String pass){
+    public boolean addMarking(Marking marking){
         try {
             ////////////////
             if (connection.isClosed()){
@@ -63,8 +62,8 @@ public class DBWorker {
             ///////////////
 
             PreparedStatement statement = connection.prepareStatement("INSERT INTO '" + DBTITLE + "' (resource, pass) VALUES (?, ?)");
-            statement.setObject(1, resource);
-            statement.setObject(2, pass);
+            statement.setObject(1, marking.getResource());
+            statement.setObject(2, marking.getPassword());
 
             statement.execute();
 
@@ -76,8 +75,9 @@ public class DBWorker {
         }
         return true;
     }
-    public ArrayList getRecord(String resource){
-        ArrayList<String> passwords = new ArrayList<>();
+    public ArrayList<Marking> getMarking(String resource){
+        ArrayList<Marking> markings = new ArrayList<>();
+        //ArrayList<String> passwords = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
 
@@ -89,7 +89,8 @@ public class DBWorker {
 //                                    rs.getString(3);
 
                 //System.out.println(message);
-                passwords.add(rs.getString(3));
+                //passwords.add(rs.getString(3));
+                markings.add(new Marking(resource, rs.getString(3)));
             }
             rs.close();
 
@@ -98,6 +99,6 @@ public class DBWorker {
             System.out.println("getRecord- при попытке получить определенные данные из бд");
             System.out.println(e);
         }
-        return passwords;
+        return markings;
     }
 }
